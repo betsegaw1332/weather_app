@@ -1,56 +1,73 @@
 import 'package:final_assesment/domain/domain.dart';
+import 'package:final_assesment/presentation/blocs/blocs.dart';
 import 'package:final_assesment/utils/icons.dart';
 import 'package:final_assesment/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class WeatherScreen extends StatelessWidget {
+class WeatherScreen extends StatefulWidget {
   final WeatherModel weatherData;
-  const WeatherScreen({super.key, required this.weatherData});
+  final bool isFavorite;
+  const WeatherScreen(
+      {super.key, required this.weatherData,required this.isFavorite});
+
+  @override
+  State<WeatherScreen> createState() => _WeatherScreenState();
+}
+
+class _WeatherScreenState extends State<WeatherScreen> {
+  bool _isFavorite = false;
+
+  @override
+  void initState() {
+    _isFavorite = widget.isFavorite;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    var listDateTimes = [
-      DateTime.now().subtract(const Duration(days: 6)),
-      DateTime.now().subtract(const Duration(days: 6)),
-      DateTime.now().subtract(const Duration(days: 6)),
-      DateTime.now().subtract(const Duration(days: 6)),
-      DateTime.now().subtract(const Duration(days: 6)),
-      DateTime.now().subtract(const Duration(days: 6)),
-      DateTime.now()
-    ];
-
-    print('HERE IS DATE ### ${weatherData.dailyWeatherCondition.first.date}');
     return Scaffold(
       appBar: AppBar(
-        leading: const SizedBox(),
+        automaticallyImplyLeading: false,
         flexibleSpace: Padding(
           padding: const EdgeInsets.only(left: 27, right: 42),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                  onTap: () {
+                    
+                    context.read<WeatherBloc>().add(FetchFavoriteWeatherData());
+                    Navigator.pop(context);
+                  },
                   child: SvgPicture.asset(backIcon)),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    weatherData.cityName,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Color(0xFF211772),
-                      fontSize: 18,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w700,
-                      height: 0,
+                  Flexible(
+                    child: Container(
+                      width: 240,
+                      child: Text(
+                        widget.weatherData.cityName,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        softWrap: false,
+                        style: const TextStyle(
+                          color: Color(0xFF211772),
+                          fontSize: 18,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 10),
                   Text(
                     AppHelpers.changeDateFormat(
-                        dateString:
-                            weatherData.dailyWeatherCondition.first.date),
+                        dateString: widget
+                            .weatherData.dailyWeatherCondition.first.date),
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Color(0xFF575757),
@@ -62,7 +79,20 @@ class WeatherScreen extends StatelessWidget {
                   )
                 ],
               ),
-              SvgPicture.asset(favoritIcon)
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _isFavorite = true;
+                    });
+                    context.read<WeatherBloc>().add(SaveFavoriteWeatherData(
+                        weatherModel: widget.weatherData));
+                  },
+                  icon: _isFavorite
+                      ? const Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                        )
+                      : const Icon(Icons.favorite_border))
             ],
           ),
         ),
@@ -76,7 +106,7 @@ class WeatherScreen extends StatelessWidget {
             Center(child: SvgPicture.asset(rainyWeatherIcon)),
             const SizedBox(height: 7),
             Text(
-              weatherData.weatherDescription,
+              widget.weatherData.weatherDescription,
               style: const TextStyle(
                 color: Color(0xFF9E93FF),
                 fontSize: 24,
@@ -90,7 +120,7 @@ class WeatherScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  weatherData.dailyWeatherCondition.first.maxTemperature,
+                  widget.weatherData.dailyWeatherCondition.first.maxTemperature,
                   style: const TextStyle(
                     color: Color(0xFF211772),
                     fontSize: 72,
@@ -146,10 +176,10 @@ class WeatherScreen extends StatelessWidget {
               Container(
                 height: 200,
                 child: ListView.builder(
-                  itemCount: weatherData.dailyWeatherCondition.length,
+                  itemCount: widget.weatherData.dailyWeatherCondition.length,
                   itemBuilder: (context, index) {
                     var dailyWeatherData =
-                        weatherData.dailyWeatherCondition[index];
+                        widget.weatherData.dailyWeatherCondition[index];
                     if (index == 0) {
                       return const SizedBox.shrink();
                     }

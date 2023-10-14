@@ -2,14 +2,31 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:hive/hive.dart';
 
+part 'daily_weather_model.g.dart';
+
+@HiveType(typeId: 2)
 class DailyWeatherModel extends Equatable {
+
+  @HiveField(0)
    final String date;
+
+   @HiveField(1)
   final String weatherIconUrl;
+
+  @HiveField(2)
   final String humidity;
+
+  @HiveField(3)
   final String windspeed;
+
+  @HiveField(4)
   final String maxTemperature;
+
+  @HiveField(5)
   final String minTemperature;
+
   const DailyWeatherModel({
     required this.date,
     required this.weatherIconUrl,

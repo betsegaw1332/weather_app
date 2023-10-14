@@ -1,6 +1,7 @@
 import 'package:final_assesment/domain/domain.dart';
 import 'package:final_assesment/presentation/Screen/weather_screen/weather_screen.dart';
 import 'package:final_assesment/presentation/blocs/blocs.dart';
+import 'package:final_assesment/presentation/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,12 +14,14 @@ class ChooseCity extends StatefulWidget {
 
 class _ChooseCityState extends State<ChooseCity> {
   final _textEditingController = TextEditingController();
+
+  List<WeatherModel> favoriteWeatherData = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFF5F4FF),
       appBar: AppBar(
-        leading: const SizedBox(),
+        leading: SizedBox(),
         centerTitle: true,
         title: const Text(
           'Choose a city',
@@ -86,7 +89,7 @@ class _ChooseCityState extends State<ChooseCity> {
                   )
                 ],
               ),
-              SizedBox(height: 28),
+              const SizedBox(height: 28),
               BlocBuilder<WeatherBloc, WeatherState>(builder: (context, state) {
                 if (state is WeatherInProgress) {
                   return const Center(
@@ -94,91 +97,13 @@ class _ChooseCityState extends State<ChooseCity> {
                   );
                 } else if (state is WeatherSuccess) {
                   return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'My Fav Cities',
-                        style: TextStyle(
-                          color: Color(0xFF211772),
-                          fontSize: 16,
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w400,
-                          height: 0.07,
-                        ),
-                      ),
                       const SizedBox(height: 20),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.6,
-                        child: ListView.builder(
-                            itemCount: 1,
-                            itemBuilder: (context, index) => Padding(
-                                  padding: const EdgeInsets.only(bottom: 20.0),
-                                  child: GestureDetector(
-                                    onTap: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                               WeatherScreen(weatherData: state.weatherData,),
-                                        )),
-                                    child: Container(
-                                      width: 343,
-                                      height: 76,
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 10),
-                                      decoration: ShapeDecoration(
-                                        color: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              state.weatherData.cityName,
-                                              maxLines: 2,
-                                              style: const TextStyle(
-                                                color: Color(0xFF575757),
-                                                fontSize: 16,
-                                                fontFamily: 'Roboto',
-                                                fontWeight: FontWeight.w500,
-                                                height: 1,
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 50,
-                                          ),
-                                          Text(
-                                            '${state.weatherData.dailyWeatherCondition.first.maxTemperature}°',
-                                            style: const TextStyle(
-                                              color: Color(0xFF211772),
-                                              fontSize: 18,
-                                              fontFamily: 'Roboto',
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 30,
-                                          ),
-                                          Image.network(
-                                            state
-                                                .weatherData
-                                                .dailyWeatherCondition
-                                                .first
-                                                .weatherIconUrl,
-                                            height: 40,
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                )),
-                      )
+                          height: MediaQuery.of(context).size.height * 0.12,
+                          child: WeatherCard(
+                            weatherData: state.weatherData,
+                          ))
                     ],
                   );
                 } else if (state is WeatherFailed) {
@@ -187,6 +112,57 @@ class _ChooseCityState extends State<ChooseCity> {
                   );
                 }
                 return Container();
+              }),
+              const SizedBox(height: 10),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'My Fav Cities',
+                  style: TextStyle(
+                    color: Color(0xFF211772),
+                    fontSize: 16,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w400,
+                    height: 0.07,
+                  ),
+                ),
+              ),
+              BlocConsumer<WeatherBloc, WeatherState>(
+                  listener: ((context, state) {
+                if (state is FavoriteWeatherSuccess) {
+                  favoriteWeatherData = [];
+                  favoriteWeatherData = state.weatherData;
+                }
+              }), builder: (context, state) {
+                if (state is FavoriteWeatherInProgress) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (state is FavoriteWeatherFailed) {
+                  return const Center(
+                    child: Text('Failed to get favorite weather data!'),
+                  );
+                }
+                return SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 1,
+                        child: ListView.builder(
+                            itemCount: favoriteWeatherData.length,
+                            itemBuilder: (context, index) => SizedBox(
+                                  height: 100,
+                                  child: WeatherCard(
+                                    weatherData: favoriteWeatherData[index],
+                                    isFavorite: true,
+                                  ),
+                                )),
+                      )
+                    ],
+                  ),
+                );
               })
             ],
           ),

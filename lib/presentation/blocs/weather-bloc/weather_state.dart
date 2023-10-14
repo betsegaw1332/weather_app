@@ -27,3 +27,26 @@ class WeatherFailed extends WeatherState {
   @override
   List<Object?> get props => [message];
 }
+
+class FavoriteWeatherInProgress extends WeatherState {}
+
+class FavoriteWeatherSuccess extends WeatherState {
+  final List<WeatherModel> weatherData;
+
+  FavoriteWeatherSuccess({required this.weatherData});
+
+  @override
+  List<Object?> get props => [weatherData];
+}
+
+class FavoriteWeatherFailed extends WeatherState {
+  final String message;
+
+  FavoriteWeatherFailed({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}
+
+
+

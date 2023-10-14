@@ -14,3 +14,12 @@ class FetchWeatherData extends WeatherEvent {
   @override
   List<Object?> get props => [apiWeatherRequestData];
 }
+
+class FetchFavoriteWeatherData extends WeatherEvent {}
+
+class SaveFavoriteWeatherData extends WeatherEvent{
+  final WeatherModel weatherModel;
+
+  SaveFavoriteWeatherData({required this.weatherModel});
+
+}

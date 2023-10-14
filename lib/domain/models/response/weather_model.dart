@@ -2,13 +2,21 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
-
+import 'package:hive/hive.dart';
 import 'package:final_assesment/domain/domain.dart';
 
+part 'weather_model.g.dart';
+
+@HiveType(typeId: 1)
 class WeatherModel extends Equatable {
+
+@HiveField(0)
 final String weatherDescription;
+
+@HiveField(1)
 final String cityName;
 
+@HiveField(2)
 final List<DailyWeatherModel> dailyWeatherCondition;
   const WeatherModel({
     required this.weatherDescription,
