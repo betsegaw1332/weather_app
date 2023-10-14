@@ -11,7 +11,7 @@ class WeatherInit extends WeatherState {}
 class WeatherInProgress extends WeatherState {}
 
 class WeatherSuccess extends WeatherState {
-  final List<WeatherModel> weatherData;
+  final WeatherModel weatherData;
 
   WeatherSuccess({required this.weatherData});
 

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() async {
-  
+
   await serviceLocatorInit();
   runApp(const MyApp());
 }
@@ -20,10 +20,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
         providers: [
           BlocProvider(
-              create: (context) => serviceLocator<WeatherBloc>()
-                ..add(FetchWeatherData(
-                    apiWeatherRequestData:
-                        APIWeatherRequest(queryString: 'Addis Ababa'))))
+              create: (context) => serviceLocator<WeatherBloc>())
         ],
         child: MaterialApp(
           title: 'Flutter Demo',

@@ -1,8 +1,5 @@
-import 'package:final_assesment/domain/domain.dart';
-import 'package:final_assesment/presentation/blocs/blocs.dart';
 import 'package:final_assesment/utils/icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../choose_city/choose_city.dart';
@@ -56,6 +53,7 @@ class OnBoardingScreen extends StatelessWidget {
                 'It\'s the newest weather app. It has a bunch of features \n and that includes most of the ones that every weather app has.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
+                  
                   color: Colors.white,
                   fontSize: 12,
                   fontFamily: 'Roboto',
@@ -63,14 +61,10 @@ class OnBoardingScreen extends StatelessWidget {
                   // height: 0.14,
                 ),
               ),
-            ),
+            ), 
             const SizedBox(height: 42),
             GestureDetector(
-              onTap: () => {
-                context.read<WeatherBloc>().add(FetchWeatherData(
-                    apiWeatherRequestData:
-                        APIWeatherRequest(queryString: 'Addis Ababa')))
-              },
+              onTap: () => {Navigator.push(context, MaterialPageRoute(builder: (context) => const ChooseCity()))},
               child: Container(
                 width: 220,
                 height: 48,
@@ -81,7 +75,7 @@ class OnBoardingScreen extends StatelessWidget {
                   ),
                 ),
                 child: const Center(
-                  child: Text(
+                  child:  Text(
                     'Get Started',
                     textAlign: TextAlign.center,
                     style: TextStyle(

@@ -1,38 +1,34 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 
 class APIWeatherResponse extends Equatable {
-  final List<Map<String, dynamic>> weather;
+  final Map<String, dynamic> data;
   const APIWeatherResponse({
-    required this.weather,
+    required this.data,
   });
 
   APIWeatherResponse copyWith({
-    List<Map<String, dynamic>>? weather,
+    Map<String, dynamic>? data,
   }) {
     return APIWeatherResponse(
-      weather: weather ?? this.weather,
+      data: data ?? this.data,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'weather': weather,
+      'data': data,
     };
   }
 
   factory APIWeatherResponse.fromMap(Map<String, dynamic> map) {
     return APIWeatherResponse(
-      weather: List<Map<String, dynamic>>.from(
-        (map['weather'] as List<dynamic>).map<Map<String, dynamic>>(
-          (x) => x as Map<String, dynamic>,
-        ),
-      ),
+      data: Map<String, dynamic>.from((map['data'] as Map<String, dynamic>)),
     );
   }
 
-  String toJson() => json.encode(toMap());
 
   factory APIWeatherResponse.fromJson(String source) =>
       APIWeatherResponse.fromMap(json.decode(source) as Map<String, dynamic>);
@@ -41,5 +37,5 @@ class APIWeatherResponse extends Equatable {
   bool get stringify => true;
 
   @override
-  List<Object> get props => [weather];
+  List<Object> get props => [data];
 }

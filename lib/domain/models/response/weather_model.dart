@@ -1,52 +1,46 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 
+import 'package:final_assesment/domain/domain.dart';
+
 class WeatherModel extends Equatable {
-  final String date;
-  final String weatherIconUrl;
-  final String humidity;
-  final String windspeedKmph;
+final String weatherDescription;
+final String cityName;
+
+final List<DailyWeatherModel> dailyWeatherCondition;
   const WeatherModel({
-    required this.date,
-    required this.weatherIconUrl,
-    required this.humidity,
-    required this.windspeedKmph,
+    required this.weatherDescription,
+    required this.cityName,
+    required this.dailyWeatherCondition,
   });
-  
-
-
 
   WeatherModel copyWith({
-    String? date,
-    String? weatherIconUrl,
-    String? humidity,
-    String? windspeedKmph,
+    String? weatherDescription,
+    String? cityName,
+    List<DailyWeatherModel>? dailyWeatherCondition,
   }) {
     return WeatherModel(
-      date: date ?? this.date,
-      weatherIconUrl: weatherIconUrl ?? this.weatherIconUrl,
-      humidity: humidity ?? this.humidity,
-      windspeedKmph: windspeedKmph ?? this.windspeedKmph,
+      weatherDescription: weatherDescription ?? this.weatherDescription,
+      cityName: cityName ?? this.cityName,
+      dailyWeatherCondition: dailyWeatherCondition ?? this.dailyWeatherCondition,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'date': date,
-      'weatherIconUrl': weatherIconUrl,
-      'humidity': humidity,
-      'windspeedKmph': windspeedKmph,
+      'weatherDescription': weatherDescription,
+      'cityName': cityName,
+      'dailyWeatherCondition': dailyWeatherCondition.map((x) => x.toMap()).toList(),
     };
   }
 
   factory WeatherModel.fromMap(Map<String, dynamic> map) {
-
     return WeatherModel(
-      date: map['date'] as String,
-      weatherIconUrl: map['weatherIconUrl'] as String,
-      humidity: map['humidity'] as String,
-      windspeedKmph: map['windspeedKmph'] as String,
+      weatherDescription: map['weatherDescription'] as String,
+      cityName: map['cityName'] as String,
+      dailyWeatherCondition: List<DailyWeatherModel>.from((map['dailyWeatherCondition'] as List<int>).map<DailyWeatherModel>((x) => DailyWeatherModel.fromMap(x as Map<String,dynamic>),),),
     );
   }
 
@@ -58,5 +52,5 @@ class WeatherModel extends Equatable {
   bool get stringify => true;
 
   @override
-  List<Object> get props => [date, weatherIconUrl, humidity, windspeedKmph];
+  List<Object> get props => [weatherDescription, cityName, dailyWeatherCondition];
 }

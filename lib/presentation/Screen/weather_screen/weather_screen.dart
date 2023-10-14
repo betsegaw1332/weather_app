@@ -1,9 +1,12 @@
+import 'package:final_assesment/domain/domain.dart';
 import 'package:final_assesment/utils/icons.dart';
+import 'package:final_assesment/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class WeatherScreen extends StatelessWidget {
-  const WeatherScreen({super.key});
+  final WeatherModel weatherData;
+  const WeatherScreen({super.key, required this.weatherData});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +20,7 @@ class WeatherScreen extends StatelessWidget {
       DateTime.now()
     ];
 
-    print(listDateTimes);
+    print('HERE IS DATE ### ${weatherData.dailyWeatherCondition.first.date}');
     return Scaffold(
       appBar: AppBar(
         leading: const SizedBox(),
@@ -29,13 +32,13 @@ class WeatherScreen extends StatelessWidget {
               GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: SvgPicture.asset(backIcon)),
-              const Column(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'New Mexico',
+                    weatherData.cityName,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Color(0xFF211772),
                       fontSize: 18,
                       fontFamily: 'Roboto',
@@ -43,11 +46,13 @@ class WeatherScreen extends StatelessWidget {
                       height: 0,
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(
-                    'Sun, November 16',
+                    AppHelpers.changeDateFormat(
+                        dateString:
+                            weatherData.dailyWeatherCondition.first.date),
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Color(0xFF575757),
                       fontSize: 12,
                       fontFamily: 'Roboto',
@@ -70,9 +75,9 @@ class WeatherScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Center(child: SvgPicture.asset(rainyWeatherIcon)),
             const SizedBox(height: 7),
-            const Text(
-              'Mostly Sunny',
-              style: TextStyle(
+            Text(
+              weatherData.weatherDescription,
+              style: const TextStyle(
                 color: Color(0xFF9E93FF),
                 fontSize: 24,
                 fontFamily: 'Roboto',
@@ -84,9 +89,9 @@ class WeatherScreen extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  '30',
-                  style: TextStyle(
+                Text(
+                  weatherData.dailyWeatherCondition.first.maxTemperature,
+                  style: const TextStyle(
                     color: Color(0xFF211772),
                     fontSize: 72,
                     fontFamily: 'Roboto',
@@ -141,18 +146,22 @@ class WeatherScreen extends StatelessWidget {
               Container(
                 height: 200,
                 child: ListView.builder(
-                  itemCount: listDateTimes.length,
+                  itemCount: weatherData.dailyWeatherCondition.length,
                   itemBuilder: (context, index) {
-                    var date = listDateTimes[index];
-
+                    var dailyWeatherData =
+                        weatherData.dailyWeatherCondition[index];
+                    if (index == 0) {
+                      return const SizedBox.shrink();
+                    }
                     return Padding(
                       padding: const EdgeInsets.only(top: 23.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Mon, Nov 17',
-                            style: TextStyle(
+                          Text(
+                            AppHelpers.abbreviatedDateFormt(
+                                dateString: dailyWeatherData.date),
+                            style: const TextStyle(
                               color: Color(0xFFD8D8D8),
                               fontSize: 12,
                               fontFamily: 'Roboto',
@@ -163,9 +172,9 @@ class WeatherScreen extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
-                                '33',
-                                style: TextStyle(
+                              Text(
+                                '${dailyWeatherData.maxTemperature}°',
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
                                   fontFamily: 'Roboto',
@@ -174,9 +183,9 @@ class WeatherScreen extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(width: 23),
-                              const Text(
-                                '24',
-                                style: TextStyle(
+                              Text(
+                                '${dailyWeatherData.minTemperature}°',
+                                style: const TextStyle(
                                   color: Color(0xFFD8D8D8),
                                   fontSize: 14,
                                   fontFamily: 'Roboto',
@@ -185,7 +194,10 @@ class WeatherScreen extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(width: 28),
-                              SvgPicture.asset(mostlySunny),
+                              Image.network(
+                                dailyWeatherData.weatherIconUrl,
+                                height: 20,
+                              ),
                             ],
                           )
                         ],

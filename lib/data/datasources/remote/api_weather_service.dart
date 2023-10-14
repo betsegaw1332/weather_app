@@ -20,9 +20,8 @@ class APIWeatherService {
       final httpResponse = await _httpClient.get(url);
       if (httpResponse.statusCode == HttpStatus.ok) {
         final decodedResponse = jsonDecode(httpResponse.body);
-
         return DataSuccess(
-            APIWeatherResponse.fromMap(decodedResponse['data']) as T);
+            APIWeatherResponse.fromMap(decodedResponse) as T);
       } else {
         throw HttpException('Failed to fetch', uri: url);
       }
