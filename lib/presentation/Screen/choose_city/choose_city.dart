@@ -1,4 +1,4 @@
-import 'package:final_assesment/Screen/weather_screen/weather_screen.dart';
+import 'package:final_assesment/presentation/Screen/weather_screen/weather_screen.dart';
 import 'package:flutter/material.dart';
 
 class ChooseCity extends StatelessWidget {
